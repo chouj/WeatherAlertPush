@@ -27,9 +27,17 @@ description和sendTime是需要抓取的内容。
 
 新建Thingspeak Channel用于存储已推送信息的发布时间，1个城镇对应1个field。因1个Channel可以有8个field，故可利用一个Channel实现8个城镇的推送。以襄阳为例，field 1起名xiangyang。MATLAB脚本中要用到Channel的ID、read_API_key、write_API_key。
 
-#### Pushbear准备
+#### 推送准备
+
+#####Pushbear准备
 
 创建通道，MATLAB脚本中要用到通道的sendkey。
+
+#####或者Telegram/IFTTT准备
+
+- 在IFTTT关联Telegram，即TG上有[@ifttt](https://t.me/ifttt)这个bot。
+- 在IFTTT启用webhooks，[后面需调用的url可在这里看到](https://ifttt.com/services/maker_webhooks/settings)。
+- 在IFTTT建立一个if Webhooks then Telegram的Applet，设定一个Event Name。
 
 #### Thingspeak Apps - MATLAB Analysis
 
