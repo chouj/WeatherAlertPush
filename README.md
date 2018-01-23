@@ -6,8 +6,8 @@
 
 ## 简介
 
-- 于Thingspeak每10分钟运行一次MATLAB脚本，通过正则表达式抓取最新的城镇预警信息；
-- 若存在目标城镇（代码中以襄阳为例），则将该信息通过Pushbear推送至微信公众号（或通过IFTTT推送至Telegram），并将该信息的发布时间记录于Thingspeak Channel用以判别是否已推送。
+- 于Thingspeak每10分钟运行一次MATLAB脚本，通过正则表达式抓取最新的县市预警信息；
+- 若存在目标县市（代码中以襄阳为例），则将该信息通过Pushbear推送至微信公众号（或通过IFTTT推送至Telegram），并将该信息的发布时间记录于Thingspeak Channel用以判别是否已推送。
 
 
 
@@ -25,7 +25,7 @@ description、headline和sendTime是需要抓取的内容。
 
 #### Thingspeak Channel准备
 
-新建Thingspeak Channel用于存储已推送信息的发布时间，1个城镇对应1个field。因1个Channel可以有8个field，故可利用一个Channel实现8个城镇的推送。以襄阳为例，field 1起名xiangyang。MATLAB脚本中要用到Channel的ID、read_API_key、write_API_key。
+新建Thingspeak Channel用于存储已推送信息的发布时间，1个县市对应1个field。因1个Channel可以有8个field，故可利用一个Channel实现8个城镇的预警信息检索推送。不同的field赋不同的值以示区别，比如代表襄阳的field1在做发布时间记录时统一赋值为1，用于判断是否已推送。MATLAB脚本中要用到Channel的ID、read_API_key、write_API_key。
 
 #### 推送准备
 
@@ -36,12 +36,12 @@ description、headline和sendTime是需要抓取的内容。
 ##### 或者Telegram/IFTTT准备
 
 - 在IFTTT关联Telegram，即TG上有[@ifttt](https://t.me/ifttt)这个bot。
-- 在IFTTT启用webhooks，[后面需调用的url可在这里看到](https://ifttt.com/services/maker_webhooks/settings)。
-- 在IFTTT建立一个if Webhooks then Telegram的Applet，设定一个Event Name。
+- 在IFTTT启用webhooks，[脚本需调用的url可在这里看到](https://ifttt.com/services/maker_webhooks/settings)。
+- 在IFTTT建立一个if Webhooks then Telegram的Applet，设定一个Event Name。MATLAB脚本要用到Event Name和上述webhooks调用的key。
 
 #### Thingspeak Apps - MATLAB Analysis
 
-新建MATLAB Analysis的app，将脚本文件XXXX.m中的代码填入；根据注释将Channel ID、几个API key和目标城镇替换为你自己的；设定10分钟运行一次的Time Control。
+Thingspeak中新建MATLAB Analysis的app，将脚本文件[WeatherAlertPush_MATLABanalysis_instance.m](https://github.com/chouj/WeatherAlertPush/blob/master/WeatherAlertPush_MATLABanalysis_instance.m)中的代码填入；根据注释将Channel ID、几个API key和目标县市替换为你自己的；设定10分钟运行一次的Time Control。
 
 ## 后记
 
