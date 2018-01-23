@@ -2,79 +2,78 @@
 % https://github.com/chouj/WeatherAlertPush
 % powered by Thingspeak/MATLAB/Pushbear/Telegram/IFTTT
 %
-%    ÓÚThingspeakÃ¿10·ÖÖÓÔËĞĞÒ»´ÎMATLAB½Å±¾£¬Í¨¹ıÕıÔò±í´ïÊ½×¥È¡×îĞÂµÄ³ÇÕòÔ¤¾¯ĞÅÏ¢£»
-%    Èô´æÔÚÄ¿±ê³ÇÕò£¨´úÂëÖĞÒÔÏåÑôÎªÀı£©£¬Ôò½«¸ÃĞÅÏ¢Í¨¹ıPushbearÍÆËÍÖÁÎ¢ĞÅ¹«ÖÚºÅ£¨»ò
-%    Í¨¹ıIFTTTÍÆËÍÖÁTelegram£©£¬²¢½«¸ÃĞÅÏ¢µÄ·¢²¼Ê±¼ä¼ÇÂ¼ÓÚThingspeak ChannelÓÃÒÔÅĞ
-%    ±ğÊÇ·ñÒÑÍÆËÍ¡£
+%    äºThingspeakæ¯10åˆ†é’Ÿè¿è¡Œä¸€æ¬¡MATLABè„šæœ¬ï¼Œé€šè¿‡æ­£åˆ™è¡¨è¾¾å¼æŠ“å–æœ€æ–°çš„åŸé•‡é¢„è­¦ä¿¡æ¯ï¼›
+%    è‹¥å­˜åœ¨ç›®æ ‡åŸé•‡ï¼ˆä»£ç ä¸­ä»¥è¥„é˜³ä¸ºä¾‹ï¼‰ï¼Œåˆ™å°†è¯¥ä¿¡æ¯é€šè¿‡Pushbearæ¨é€è‡³å¾®ä¿¡å…¬ä¼—å·ï¼ˆæˆ–
+%    é€šè¿‡IFTTTæ¨é€è‡³Telegramï¼‰ï¼Œå¹¶å°†è¯¥ä¿¡æ¯çš„å‘å¸ƒæ—¶é—´è®°å½•äºThingspeak Channelç”¨ä»¥åˆ¤
+%    åˆ«æ˜¯å¦å·²æ¨é€ã€‚
 
 
 % Thingspeak channel
-ReadAPIKey='yours';
-WriteAPIKey='yours';
-ID=yours;
+ReadAPIKey='{yours}';
+WriteAPIKey='{yours}';
+ID={yours};
 
 % Pushbear sendkey
-sendKey='yours';
+sendKey='{yours}';
 
-% APIµ÷ÓÃ·½·¨Éè¶¨Îªpost
-% PushbearµÄ
+% APIè°ƒç”¨æ–¹æ³•è®¾å®šä¸ºpost
+% Pushbearçš„
 options = weboptions('RequestMethod','post','Timeout',60);
-% webhooks of IFTTTµÄ £¨ÈçÓûÍÆËÍÖ»Telegram£¬ÇëÈ¡ÏûÏÂÒ»ĞĞµÄ×¢ÊÍ£©
+% webhooks of IFTTTçš„ ï¼ˆå¦‚æ¬²æ¨é€è‡³Telegramï¼Œè¯·å–æ¶ˆä¸‹ä¸€è¡Œçš„æ³¨é‡Šï¼‰
 % optionsTG = weboptions('RequestMethod','post', 'MediaType','application/json');
 
-% ¹ú¼ÒÍ»·¢ÊÂ¼şÔ¤¾¯ĞÅÏ¢·¢²¼Íø
+% å›½å®¶çªå‘äº‹ä»¶é¢„è­¦ä¿¡æ¯å‘å¸ƒç½‘
 yujing=urlread('http://www.12379.cn/data/alarm_list_all.html','TimeOut',60);
 
-% ÕıÔò±í´ïÊ½×¥È¡
+% æ­£åˆ™è¡¨è¾¾å¼æŠ“å–
 description=regexp(yujing,'{"description":"(.*?)","headline"','tokens');
 headline=regexp(yujing,'"headline":"(.*?)","identifier"','tokens');
 sendtime=regexp(yujing,'"sendTime":"(.*?)"}','tokens');
 % identifier=regexp(yujing,'","identifier":"(.*?)","sendTime','tokens');
 
-% ½«sendTime×ª»¯Îª´ıĞ´ÈëThingspeak channelµÄdatetimeÀàĞÍtimestamp
+% å°†sendTimeè½¬åŒ–ä¸ºå¾…å†™å…¥Thingspeak channelçš„datetimeç±»å‹timestamp
 for i=1:length(sendtime)
      tStamps(i) = datetime(cell2mat(sendtime{i}), 'InputFormat', 'yyyy-MM-dd HH:mm:ss');
 end
 
-% ´ÓheadlineÌáÈ¡ÏØÊĞÃû
-% ×¢Òâ£ºtemp(1:3)Ö»ÊÊÓÃÓÚÁ½¸ö×ÖµÄÏØÊĞ£¬ÈçXXÊĞ¡¢XXÏØ¡¢XXÇø£¡
+% ä»headlineæå–å¿å¸‚å
+% æ³¨æ„ï¼štemp(1:3)åªé€‚ç”¨äºä¸¤ä¸ªå­—çš„å¿å¸‚ï¼Œå¦‚XXå¸‚ã€XXå¿ã€XXåŒºï¼ï¼
 for i=1:length(headline)
     temp=headline{i};
     temp=temp{1};
     city{i}=temp(1:3);
 end
 
-% Ä¿±ê³ÇÊĞÊ¶±ğÓëÔ¤¾¯ĞÅÏ¢ÍÆËÍ
+% ç›®æ ‡å¿å¸‚è¯†åˆ«ä¸é¢„è­¦ä¿¡æ¯æ¨é€
 clear n datav datat
-n=find(strcmp('ÏåÑôÊĞ',city)==1); %Ä¿±ê³ÇÊĞÔ¤¾¯ĞÅÏ¢ÌõÄ¿Ê¶±ğ
+n=find(strcmp('è¥„é˜³å¸‚',city)==1); %ç›®æ ‡å¿å¸‚é¢„è­¦ä¿¡æ¯æ¡ç›®è¯†åˆ«
 if length(n)>0
-        % ¶ÁÈ¡Thingspeak Channel field 1 ÈıÌìÄÚµÄ¼ÇÂ¼£¬datavÊÇfield
-        % 1µÄÊıÖµ£¬datatÊÇ¸ÃÊıÖµµÄtimestamp¡£
+        % è¯»å–Thingspeak Channel field 1 ä¸‰å¤©å†…çš„è®°å½•ï¼Œdatavæ˜¯field1çš„æ•°å€¼ï¼Œdatatæ˜¯è¯¥æ•°å€¼çš„timestampã€‚
         try
             [datav,datat] = thingSpeakRead(ID,'Fields',1,'NumDays',3,'ReadKey',ReadAPIKey,'Timeout',60);
         catch
             pause(30);[datav,datat] = thingSpeakRead(ID,'Fields',1,'NumDays',3,'ReadKey',ReadAPIKey,'Timeout',60);
         end
-        if isempty(datat)==1 % Èç¹ûÎ´¶ÁÈ¡µ½ÈÎºÎÊı¾İ£¬±íÊ¾ChannelĞÂ½¨¡¢ÉĞÎ´ÓĞÊı¾İ¼ÇÂ¼£¬½«ÏûÏ¢ÍÆËÍ³öÈ¥¡£
+        if isempty(datat)==1 % å¦‚æœæœªè¯»å–åˆ°ä»»ä½•æ•°æ®ï¼Œè¡¨ç¤ºChannelæ–°å»ºã€å°šæœªæœ‰æ•°æ®è®°å½•ï¼Œå°†æ¶ˆæ¯æ¨é€å‡ºå»ã€‚
             try 
-                % ½èÖúPushbearÍÆËÍÖÁÎ¢ĞÅ¹«ÖÚºÅ
+                % å€ŸåŠ©Pushbearæ¨é€è‡³å¾®ä¿¡å…¬ä¼—å·
                 response = webwrite('https://pushbear.ftqq.com/sub', 'sendkey',sendKey,'text',cell2mat(headline{n(1)}), 'desp',cell2mat(description{n(1)}),options);
-                % Èç¹ûÒª½èÖúIFTTTÍÆËÍÖÁTelegram£¬Çë½«ËùÓĞpushbearµÄAPIµ÷ÓÃÌæ»»ÎªÈ¡Ïû×¢ÊÍµÄÏÂÒ»ĞĞ£¬£º
+                % å¦‚æœè¦å€ŸåŠ©IFTTTæ¨é€è‡³Telegramï¼Œè¯·å°†æ‰€æœ‰pushbearçš„APIè°ƒç”¨æ›¿æ¢ä¸ºå–æ¶ˆæ³¨é‡Šçš„ä¸‹ä¸€è¡Œï¼Œï¼š
                 % response = webwrite('https://maker.ifttt.com/trigger/{your_event_name}/with/key/{your_ifttt_webhooks_key}', 'value1',cell2mat(headline{n(i)}),'value2',cell2mat(description{n(i)}), optionsTG);
             catch
                 pause(30);
                 response = webwrite('https://pushbear.ftqq.com/sub', 'sendkey',sendKey,'text',cell2mat(headline{n(1)}), 'desp',cell2mat(description{n(1)}),options);
             end
             try
-                % ÓÉÓÚn¿ÉÄÜ´óÓÚ1£¬ÕâÀïn(1)ÊÇ×îĞÂµÄÔ¤¾¯ĞÅÏ¢¡£½«¸ÃÌõĞÅÏ¢µÄ·¢²¼Ê±¼äĞ´ÈëThingspeak
-                % channel£¬fields1µÄÖµ¸³Îª1¡£
+                % ç”±äºnå¯èƒ½å¤§äº1ï¼Œè¿™é‡Œn(1)æ˜¯æœ€æ–°çš„é¢„è­¦ä¿¡æ¯ã€‚å°†è¯¥æ¡ä¿¡æ¯çš„å‘å¸ƒæ—¶é—´å†™å…¥Thingspeak
+                % channelï¼Œfields1çš„å€¼èµ‹ä¸º1ã€‚
                 responsew=thingSpeakWrite(ID,1, 'Fields', 1,'TimeStamp',tStamps(n(1)),'WriteKey', WriteAPIKey,'Timeout',60);
             catch
                 pause(30);
                 responsew=thingSpeakWrite(ID,1, 'Fields', 1,'TimeStamp',tStamps(n(1)),'WriteKey', WriteAPIKey,'Timeout',60);
             end
-        else % Èç¹ûdatatÓĞ¼ÇÂ¼
-            if eq(datat(max(find(datav==1))),tStamps(n(1)))==0 %×î½üÒ»ÌõThingspeak Channel¼ÇÂ¼µÄtimestampÈôÓë×îĞÂÒ»ÌõÊ¶±ğÔ¤¾¯ĞÅÏ¢µÄ·¢²¼Ê±¼ä²»Í¬£¬Ôò±íÃ÷¸Ã×îĞÂÔ¤¾¯ĞÅÏ¢Î´·¢²¼¹ı¡£
+        else % å¦‚æœdatatæœ‰è®°å½•
+            if eq(datat(max(find(datav==1))),tStamps(n(1)))==0 %æœ€è¿‘ä¸€æ¡Thingspeak Channelè®°å½•çš„timestampè‹¥ä¸æœ€æ–°ä¸€æ¡è¯†åˆ«é¢„è­¦ä¿¡æ¯çš„å‘å¸ƒæ—¶é—´ä¸åŒï¼Œåˆ™è¡¨æ˜è¯¥æœ€æ–°é¢„è­¦ä¿¡æ¯æœªå‘å¸ƒè¿‡ã€‚
                 try 
                     response = webwrite('https://pushbear.ftqq.com/sub', 'sendkey',sendKey,'text',cell2mat(headline{n(1)}), 'desp',cell2mat(description{n(1)}),options);
                 catch
@@ -82,7 +81,7 @@ if length(n)>0
                     response = webwrite('https://pushbear.ftqq.com/sub', 'sendkey',sendKey,'text',cell2mat(headline{n(1)}), 'desp',cell2mat(description{n(1)}),options);
                 end
                 try
-                    % ÍÆËÍºó½«¸ÃÌõĞÅÏ¢µÄ·¢²¼Ê±¼äĞ´ÈëThingspeak channel£¬fields1µÄÖµ¸³Îª1¡£
+                    % æ¨é€åå°†è¯¥æ¡ä¿¡æ¯çš„å‘å¸ƒæ—¶é—´å†™å…¥Thingspeak channelï¼Œfields1çš„å€¼èµ‹ä¸º1ã€‚
                     responsew=thingSpeakWrite(ID,1, 'Fields', 1,'TimeStamp',tStamps(n(1)),'WriteKey', WriteAPIKey,'Timeout',60);
                 catch
                     pause(30);
