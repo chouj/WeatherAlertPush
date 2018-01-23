@@ -19,21 +19,21 @@
 
 ```{"description":"天津市气象台于2018年01月21日22时28分发布天津地区道路结冰黄色预警信号：路表温度低于0 ℃，出现降水，12小时内可能出现对交通有影响的道路结冰，请有关单位和人员作好防范准备。","headline":"天津市气象局发布道路结冰黄色预警/III/较重","identifier":"12000041600000_20180121223442","sendTime":"2018-01-21 22:36:38"}```
 
-description和sendTime是需要抓取的内容。
+description、headline和sendTime是需要抓取的内容。
 
 ## 设置方法及源码
 
-####Thingspeak Channel准备
+#### Thingspeak Channel准备
 
 新建Thingspeak Channel用于存储已推送信息的发布时间，1个城镇对应1个field。因1个Channel可以有8个field，故可利用一个Channel实现8个城镇的推送。以襄阳为例，field 1起名xiangyang。MATLAB脚本中要用到Channel的ID、read_API_key、write_API_key。
 
 #### 推送准备
 
-#####Pushbear准备
+##### Pushbear准备
 
 创建通道，MATLAB脚本中要用到通道的sendkey。
 
-#####或者Telegram/IFTTT准备
+##### 或者Telegram/IFTTT准备
 
 - 在IFTTT关联Telegram，即TG上有[@ifttt](https://t.me/ifttt)这个bot。
 - 在IFTTT启用webhooks，[后面需调用的url可在这里看到](https://ifttt.com/services/maker_webhooks/settings)。
